@@ -1,0 +1,4 @@
+# git ignores the following files and paths
+notebooks/.ipynb_checkpoints/
+py/__pycache__
+

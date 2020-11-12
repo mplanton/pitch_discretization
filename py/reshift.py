@@ -22,6 +22,7 @@ librosa['hop_length'] = librosa_hop_len
 # other needed modules
 import matplotlib.pyplot as plt
 import numpy as np
+import soundfile as sf
 
 # -----------------------------------------------------------------------------
 
@@ -29,16 +30,16 @@ def reshift(x, sr, scale='chromatic'):
     # parameters
     
     # window size of the pitch analysis
-    pitch_window_size = 4096
+    pitch_N = 4096
     # hop size of the pitch analysis
     pitch_hop_size = 2048
     
     # analysis window size for pitch shifting
-    shift_analysis_win_size = pitch_hop_size
-    # analysis hop size for pitch shifting
-    shift_hop_size = shift_analysis_win_size
+    shift_N = pitch_hop_size
+    # pitch shifting analysis overlap factor
+    overlap_factor = 2
     
-    f_0, voiced_flag = pitch_track(x, sr, pitch_window_size, pitch_hop_size)
+    f_0, voiced_flag = pitch_track(x, sr, pitch_N, pitch_hop_size)
     
     f_out = freq_scale(f_0, scale)
     
@@ -49,7 +50,7 @@ def reshift(x, sr, scale='chromatic'):
     # window size and hop size) and
     # audio frame rate (pitch shifting window size and hop size)
     
-    y = pitch_shift(x, sr, rho, shift_analysis_win_size, shift_hop_size)
+    y = pitch_shift(x, sr, rho, pitch_hop_size, shift_N, overlap_factor)
     return y
 
 # -----------------------------------------------------------------------------
@@ -62,24 +63,88 @@ def pitch_track(x, sr, window_size, hop_size):
 
 # -----------------------------------------------------------------------------
 
-def pitch_shift(x, sr, rho, Sa, analysis_hop_size):
-    # This is the windowed no-overlap approach using librosa pitch_shift
+def pitch_shift(x, sr, rho, rho_N, N, overlap_factor):
+    """
+    general time varying pitch shifting function according to rho
+    This function decouples various methods for pitch shifting from the rest
+    of the algorithm.
+    x...input signal to be pitch shifted
+    sr...sample rate of x
+    rho...time varying pitch-shifting factor
+    rho_N...window size of the validity of the pitch-shifting factor
+    N...analysis window size of pitch shifting
+    overlap_factor...factor of window overlap for OLA
+    """
+    method = "ola"
+    
+    if method == "rosa":
+        y_disc = pitch_shift_rosa(x, rho, rho_N)
+    elif method == "ola":
+        y_disc = pitch_shift_ola(x, sr, rho, rho_N, N, overlap_factor)
+    return y_disc
+
+# -----------------------------------------------------------------------------
+
+def pitch_shift_rosa(x, rho, N):
+    """This is the windowed no-overlap approach using librosa pitch_shift."""
     n_blocks = rho.size - 1
-    w = np.hanning(Sa)
+    w = np.hanning(N)
     y_disc = []
     # loop over blocks
     for i in range(n_blocks):
         r = rho[i]
         if np.isnan(r):
             # unvoiced
-            shifted = x[i*Sa:(i+1)*Sa] * w # unprocessed
+            shifted = x[i*N:(i+1)*N] * w # unprocessed
         else:
             # convert to semitones
             semitones = 12*np.log2(r)
-            shifted = librosa.effects.pitch_shift(x[i*Sa:(i+1)*Sa], n_steps=semitones) * w
+            shifted = librosa.effects.pitch_shift(x[i*N:(i+1)*N], n_steps=semitones) * w
         y_disc.append(shifted)
     y_disc = np.concatenate(y_disc)
     return y_disc
+
+# -----------------------------------------------------------------------------
+
+def pitch_shift_ola(x, sr, rho, rho_N, N, overlap_factor):
+    """
+    Time varying pitch shifting using TSM by OLA and resampling.
+    x...input signal to be pitch shifted
+    sr...sample rate of x
+    rho...time varying pitch-shifting factor
+    rho_N...window size of the validity of the pitch-shifting factor
+    N...analysis window size of pitch shifting
+    overlap_factor...factor of window overlap for OLA
+    """
+    # format pitch-shifting factor to processing parameters
+    rho_formated = np.repeat(rho, overlap_factor)
+    
+    y = np.zeros(N)
+    w = np.hanning(N)
+    Sa = int(N/overlap_factor) # analysis hop size
+    n_blocks = rho_formated.size - (overlap_factor + 1) # skip last blocks
+    for i in range(n_blocks):
+        # pitch-shifting factor
+        r = rho_formated[i]
+        # time-scaling factor
+        alpha = 1 / r 
+
+        block = x[i*Sa : i*Sa+N] * w
+        
+        if not np.isnan(r): # voiced
+            resampled_block = librosa.resample(block, sr, sr*alpha)
+        else: # unvoiced (no pitch shifting)
+            alpha = 1
+            resampled_block = block
+        
+        Ss = int(alpha * Sa)
+        head = y[:-(N-Ss)]
+        overlap = y[-(N-Ss):] + resampled_block[:N-Ss]
+        tail = resampled_block[N-Ss:]
+        y = np.concatenate((head, overlap, tail))
+    return y
+        
+        
 
 # -----------------------------------------------------------------------------
 
@@ -124,23 +189,25 @@ def _test():
     #x, sr = librosa.load('../../samples/Toms_diner.wav')
     #x, sr = librosa.load('../../samples/sweep_20Hz_20kHz_10s.wav')
     
-    #pos = 5
-    #dur = 10
-    #x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
-    
+    pos = 5
     dur = 10
-    fmin = 500
-    fmax = 4*500
-    sr = 44100
-    x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
+    x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
+    
+    # dur = 10
+    # fmin = 500
+    # fmax = 4*500
+    # sr = 44100
+    # x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
     
     
-    y = reshift(x, sr, scale='wholetone')
+    y = reshift(x, sr, scale='chromatic')
     
     
     _my_plot(x, sr, "original signal")
     
     _my_plot(y, sr, "processed signal")
+    
+    sf.write("test.wav", y, sr)
 
 
 if __name__ == "__main__":

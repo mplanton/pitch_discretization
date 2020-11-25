@@ -56,6 +56,10 @@ def reshift(x, sr, scale='chromatic'):
 # -----------------------------------------------------------------------------
 
 def pitch_track(x, sr, window_size, hop_size):
+    """
+    Pitch tracking function to decouple the particular pitch shifting
+    algorithm from the task of pitch shifting.
+    """
     fmin = 60
     fmax = 2000
     f_0, voiced_flag, voiced_probs = librosa.pyin(x, fmin=fmin, fmax=fmax, sr=sr, frame_length=window_size)
@@ -65,7 +69,7 @@ def pitch_track(x, sr, window_size, hop_size):
 
 def pitch_shift(x, sr, rho, rho_N, N, overlap_factor):
     """
-    general time varying pitch shifting function according to rho
+    General time varying pitch shifting function according to rho
     This function decouples various methods for pitch shifting from the rest
     of the algorithm.
     x...input signal to be pitch shifted
@@ -86,7 +90,11 @@ def pitch_shift(x, sr, rho, rho_N, N, overlap_factor):
 # -----------------------------------------------------------------------------
 
 def pitch_shift_rosa(x, rho, N):
-    """This is the windowed no-overlap approach using librosa pitch_shift."""
+    """
+    This is the windowed no-overlap approach using librosa pitch_shift.
+    This produces a lot of artifacts because the algorithm is not meant for
+    time variable pitch shifting.
+    """
     n_blocks = rho.size - 1
     w = np.hanning(N)
     y_disc = []
@@ -150,6 +158,7 @@ def pitch_shift_ola(x, sr, rho, rho_N, N, overlap_factor):
 
 def freq_scale(f_0, scale='chromatic', tune=440):
     """
+    The discrete frequency scaling function for the desired pitch.
     frequency scaling: chromatic or wholetone
     f_0...input frequency
     tune...tuning frequency
@@ -189,18 +198,18 @@ def _test():
     #x, sr = librosa.load('../../samples/Toms_diner.wav')
     #x, sr = librosa.load('../../samples/sweep_20Hz_20kHz_10s.wav')
     
-    pos = 5
-    dur = 10
-    x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
-    
+    # pos = 5
     # dur = 10
-    # fmin = 500
-    # fmax = 4*500
-    # sr = 44100
-    # x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
+    # x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
+    
+    dur = 10
+    fmin = 500
+    fmax = 4*500
+    sr = 44100
+    x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
     
     
-    y = reshift(x, sr, scale='chromatic')
+    y = reshift(x, sr, scale='w')
     
     
     _my_plot(x, sr, "original signal")

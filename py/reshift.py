@@ -26,6 +26,8 @@ import soundfile as sf
 # -----------------------------------------------------------------------------
 
 def reshift(x, sr, scale='chromatic'):
+    old_max = np.abs(np.max(x))
+    
     # parameters
     
     # window size of the pitch analysis
@@ -38,6 +40,9 @@ def reshift(x, sr, scale='chromatic'):
     # pitch shifting analysis overlap factor
     overlap_factor = 2
     
+    # zero padding because librosa pYIN does this
+    x = np.concatenate((x, np.zeros(x.size % pitch_N)))
+    
     f_0, voiced_flag = pitch_track(x, sr, pitch_N, pitch_hop_size)
     
     f_out = freq_scale(f_0, scale)
@@ -46,7 +51,7 @@ def reshift(x, sr, scale='chromatic'):
     rho = f_out / f_0
     
     y = pitch_shift(x, sr, rho, pitch_hop_size, shift_N, overlap_factor)
-    return y
+    return (y / np.abs(np.max(y))) * old_max # normalization
 
 # -----------------------------------------------------------------------------
 
@@ -159,7 +164,7 @@ def pitch_shift_ola(x, sr, rho, rho_N, N, overlap_factor):
         overlap = y[-(resampled.size - Ss) : ] + resampled[ : resampled.size - Ss]
         tail = resampled[resampled.size-Ss:]
         y = np.concatenate((y[:-(resampled.size - Ss)], overlap, tail))
-    return y / np.abs(np.max(y)) # normalization
+    return y
 
 # -----------------------------------------------------------------------------
 
@@ -206,7 +211,7 @@ def _my_plot(sig, sr, title=''):
 def _test():
     # input signal
     
-    dur = 10
+    dur = 5.12579
     fmin = 500
     fmax = 4*500
     sr = 44100

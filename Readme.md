@@ -3,7 +3,7 @@ Reshift
 
 Repeated Pitch-shifting for Frequency Discretization as Artistic Effect for Speech Signals.
 
-The goal is to develop a real-time capable pitch discretiation effect similar to *Autotune* and generate an artistic effect named *reshift* by repeatedly applying it to a speech signal.
+The goal is to develop a real-time capable pitch discretization effect similar to *Autotune* and generate an artistic effect named *reshift* by repeatedly applying it to a speech signal.
 
 
 Directories

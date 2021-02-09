@@ -6,6 +6,11 @@ Reshift: A pitch discretization effect
 Manuel Planton 2020
 """
 
+import numpy as np
+import scipy.signal as signal
+import matplotlib.pyplot as plt
+import soundfile as sf
+
 # define default samplerate of 44100Hz and not 22050Hz
 # and fft length and hop size
 from presets import Preset
@@ -19,15 +24,11 @@ librosa['n_fft'] = 4096
 librosa_hop_len = 2048
 librosa['hop_length'] = librosa_hop_len
 
-import matplotlib.pyplot as plt
-import numpy as np
-import soundfile as sf
+from utility import Filterbank
 
 # -----------------------------------------------------------------------------
 
 def reshift(x, sr, scale='chromatic'):
-    old_max = np.abs(np.max(x))
-    
     # parameters
     
     # window size of the pitch analysis
@@ -51,7 +52,7 @@ def reshift(x, sr, scale='chromatic'):
     rho = f_out / f_0
     
     y = pitch_shift(x, sr, rho, pitch_hop_size, shift_N, overlap_factor)
-    return (y / np.abs(np.max(y))) * old_max # normalization
+    return (y / np.abs(np.max(y))) * np.abs(np.max(x)) # normalization
 
 # -----------------------------------------------------------------------------
 
@@ -79,13 +80,60 @@ def pitch_shift(x, sr, rho, rho_N, N, overlap_factor):
     N...analysis window size of pitch shifting
     overlap_factor...factor of window overlap for OLA
     """
-    method = "ola"
+    method = "rollers"
     
     if method == "rosa":
         y_disc = pitch_shift_rosa(x, rho, rho_N)
     elif method == "ola":
         y_disc = pitch_shift_ola(x, sr, rho, rho_N, N, overlap_factor)
+    elif method == "rollers":
+        y_disc = pitch_shift_rollers(x, sr, rho, rho_N)
     return y_disc
+
+# -----------------------------------------------------------------------------
+
+def pitch_shift_rollers(x, fs, psr, N, order=2, n=100):
+    """
+    Time variant 'Rollers' pitch-shifting algorithm.
+    x: input signal
+    fs: sampling rate
+    psr: list of pitch-shifting ratios for x
+    N: pitch analysis block size of the pitch tracking algorithm
+    order: filter order of the used filter bank
+    n: number of filter in filterbank
+    """
+    # format pitch shifting ratio
+    # unvoiced parts cause no pitch shift
+    psr = np.nan_to_num(psr, nan=1)
+    
+    filt_bank = Filterbank(n, order, fs)
+    
+    # divide input into frequency bands
+    x_filtered = filt_bank.filt(x)
+    
+    # frequency shifting in every band
+    out_signals = []
+    t = np.linspace(0, x_filtered[0].size/fs, x_filtered[0].size)
+    for i in range(len(x_filtered)):
+        # calculate time variant carrier frequencies for every block
+        fc = filt_bank.fcs[i]
+        f_shift = fc * psr - fc
+        
+        # frequency shifting with time variable carrier frequency
+        carrier = np.zeros(x_filtered[i].size, dtype=complex)
+        for j in range(f_shift.size):
+            f = f_shift[j] # discontinuous carrier frequency causes cracks
+            carrier[j*N:(j+1)*N] = np.exp(1j*2*np.pi*f*t[j*N:(j+1)*N])
+        band = (signal.hilbert(x_filtered[i]) * carrier).real
+    
+        out_signals.append(band)
+
+    # add bands together
+    y = np.zeros(out_signals[0].size)
+    for sig in out_signals:
+        y += sig
+    
+    return y
 
 # -----------------------------------------------------------------------------
 
@@ -224,8 +272,7 @@ def _test():
     # x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
     
     
-    y = reshift(x, sr, scale='c')
-    
+    y = reshift(x, sr, scale='w')
     
     _my_plot(x, sr, "original signal")
     

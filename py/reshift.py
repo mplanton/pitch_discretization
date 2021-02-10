@@ -12,17 +12,12 @@ import matplotlib.pyplot as plt
 import soundfile as sf
 
 # define default samplerate of 44100Hz and not 22050Hz
-# and fft length and hop size
 from presets import Preset
 import librosa as _librosa
 import librosa.display as _display
 _librosa.display = _display
 librosa = Preset(_librosa)
-
 librosa['sr'] = 44100
-librosa['n_fft'] = 4096
-librosa_hop_len = 2048
-librosa['hop_length'] = librosa_hop_len
 
 from utility import Filterbank
 
@@ -32,9 +27,11 @@ def reshift(x, sr, scale='chromatic'):
     # parameters
     
     # window size of the pitch analysis
-    pitch_N = 4096
+    pitch_N = 1024
+    librosa['n_fft'] = pitch_N
     # hop size of the pitch analysis
-    pitch_hop_size = 2048
+    pitch_hop_size = 512
+    librosa['hop_length'] = pitch_hop_size
     
     # analysis window size for pitch shifting
     shift_N = pitch_hop_size
@@ -45,6 +42,9 @@ def reshift(x, sr, scale='chromatic'):
     x = np.concatenate((x, np.zeros(x.size % pitch_N)))
     
     f_0, voiced_flag = pitch_track(x, sr, pitch_N, pitch_hop_size)
+    
+    #DEBUG: discontiuities
+    #f_0 = np.full(f_0.shape, 200)
     
     f_out = freq_scale(f_0, scale)
     
@@ -122,7 +122,7 @@ def pitch_shift_rollers(x, fs, psr, N, order=2, n=100):
         # frequency shifting with time variable carrier frequency
         carrier = np.zeros(x_filtered[i].size, dtype=complex)
         for j in range(f_shift.size):
-            f = f_shift[j] # discontinuous carrier frequency causes cracks
+            f = f_shift[j] # discontinuous carrier frequency causes cracks?
             carrier[j*N:(j+1)*N] = np.exp(1j*2*np.pi*f*t[j*N:(j+1)*N])
         band = (signal.hilbert(x_filtered[i]) * carrier).real
     
@@ -263,16 +263,16 @@ def _test():
     fmin = 500
     fmax = 4*500
     sr = 44100
-    x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
+    #x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
     
-    #x, sr = librosa.load('../../samples/Toms_diner.wav')
+    x, sr = librosa.load('../../samples/Toms_diner.wav')
     
     # pos = 5
     # dur = 20
     # x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
     
     
-    y = reshift(x, sr, scale='w')
+    y = reshift(x, sr, scale='tri')
     
     _my_plot(x, sr, "original signal")
     

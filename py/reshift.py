@@ -120,6 +120,7 @@ def pitch_shift_rollers(x, fs, psr, N, order=2, n=100):
         f_shift = fc * psr - fc
         
         # frequency shifting with time variable carrier frequency
+        # TODO: wrong FM -> fix this
         carrier = np.zeros(x_filtered[i].size, dtype=complex)
         for j in range(f_shift.size):
             f = f_shift[j] # discontinuous carrier frequency causes cracks?

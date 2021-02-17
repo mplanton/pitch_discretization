@@ -8,6 +8,7 @@ Manuel Planton 2020
 
 import numpy as np
 import scipy.signal as signal
+import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 import soundfile as sf
 
@@ -38,13 +39,13 @@ def reshift(x, sr, scale='chromatic'):
     # pitch shifting analysis overlap factor
     overlap_factor = 2
     
-    # zero padding because librosa pYIN does this
-    x = np.concatenate((x, np.zeros(x.size % pitch_N)))
+    # zero padding because librosa pYIN does this internally
+    x = np.concatenate((x, np.zeros(pitch_N - (x.size % pitch_N) - 1)))
     
     f_0, voiced_flag = pitch_track(x, sr, pitch_N, pitch_hop_size)
     
-    #DEBUG: discontiuities
-    #f_0 = np.full(f_0.shape, 200)
+    # append one zero...
+    x = np.concatenate((x, np.zeros(1)))
     
     f_out = freq_scale(f_0, scale)
     
@@ -100,15 +101,37 @@ def pitch_shift_rollers(x, fs, psr, N, order=2, n=100):
     psr: list of pitch-shifting ratios for x
     N: pitch analysis block size of the pitch tracking algorithm
     order: filter order of the used filter bank
-    n: number of filter in filterbank
+    n: number of filters in the filter bank
     """
     # format pitch shifting ratio
     # unvoiced parts cause no pitch shift
     psr = np.nan_to_num(psr, nan=1)
     
-    filt_bank = Filterbank(n, order, fs)
+    
+    ### UPSAMPLING ###
+    L = N
+    
+    # control signal smoothing filter length
+    # Do the upsampling with the pitch shifting ratio
+    psr_up = np.repeat(psr, L)
+    # optional smoothing
+    #l = 32
+    #h_smooth = signal.windows.triang(l) / (l-1)
+    #psr_up = signal.convolve(psr_up, h_smooth, mode="same")
+    
+    ## OR ##
+    
+    # Do upsampling by inserting zeros and linear interpolation
+    #psr_up = np.zeros(x.size)
+    #psr_up[::L] = psr
+    #h_interp = signal.windows.triang(2 * L - 1)
+    #psr_up = signal.convolve(psr_up, h_interp, mode="same")
+    
+    ### UPSAMPLING ###
+    
     
     # divide input into frequency bands
+    filt_bank = Filterbank(n, order, fs)
     x_filtered = filt_bank.filt(x)
     
     # frequency shifting in every band
@@ -117,18 +140,16 @@ def pitch_shift_rollers(x, fs, psr, N, order=2, n=100):
     for i in range(len(x_filtered)):
         # calculate time variant carrier frequencies for every block
         fc = filt_bank.fcs[i]
-        f_shift = fc * psr - fc
+        f_shift = fc * psr_up - fc
+        
+        # integrate frequency function for FM of the frequency shifting carrier
+        w_int = integrate.cumulative_trapezoid(2*np.pi*f_shift, t, initial=0)
         
         # frequency shifting with time variable carrier frequency
-        # TODO: wrong FM -> fix this
-        carrier = np.zeros(x_filtered[i].size, dtype=complex)
-        for j in range(f_shift.size):
-            f = f_shift[j] # discontinuous carrier frequency causes cracks?
-            carrier[j*N:(j+1)*N] = np.exp(1j*2*np.pi*f*t[j*N:(j+1)*N])
+        carrier = np.exp(1j*w_int)
         band = (signal.hilbert(x_filtered[i]) * carrier).real
-    
         out_signals.append(band)
-
+    
     # add bands together
     y = np.zeros(out_signals[0].size)
     for sig in out_signals:

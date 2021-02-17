@@ -44,7 +44,7 @@ def reshift(x, sr, scale='chromatic'):
     
     f_0, voiced_flag = pitch_track(x, sr, pitch_N, pitch_hop_size)
     
-    # append one zero...
+    # append one zero for correct length with f_0
     x = np.concatenate((x, np.zeros(1)))
     
     f_out = freq_scale(f_0, scale)
@@ -111,10 +111,10 @@ def pitch_shift_rollers(x, fs, psr, N, order=2, n=100):
     ### UPSAMPLING ###
     L = N
     
-    # control signal smoothing filter length
     # Do the upsampling with the pitch shifting ratio
-    psr_up = np.repeat(psr, L)
+    psr_up = np.repeat(psr, L) # this on its own is most likely sufficient
     # optional smoothing
+    # control signal smoothing filter length
     #l = 32
     #h_smooth = signal.windows.triang(l) / (l-1)
     #psr_up = signal.convolve(psr_up, h_smooth, mode="same")
@@ -289,12 +289,11 @@ def _test():
     
     x, sr = librosa.load('../../samples/Toms_diner.wav')
     
-    # pos = 5
-    # dur = 20
+    pos = 5
+    dur = 20
     # x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
     
-    
-    y = reshift(x, sr, scale='tri')
+    y = reshift(x, sr, scale='w')
     
     _my_plot(x, sr, "original signal")
     

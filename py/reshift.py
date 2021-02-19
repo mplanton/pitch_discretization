@@ -20,131 +20,174 @@ _librosa.display = _display
 librosa = Preset(_librosa)
 librosa['sr'] = 44100
 
+
 from Filter import Filterbank
 
-# -----------------------------------------------------------------------------
 
-def reshift(x, sr, scale='chromatic'):
-    # parameters
-    
-    # window size of the pitch analysis
-    pitch_N = 1024
-    librosa['n_fft'] = pitch_N
-    # hop size of the pitch analysis
-    pitch_hop_size = 512
-    librosa['hop_length'] = pitch_hop_size
-    
-    
-    # zero padding because librosa pYIN does this internally
-    x = np.concatenate((x, np.zeros(pitch_N - (x.size % pitch_N) - 1)))
-    
-    fmin = 60
-    fmax = 2000
-    f_0, voiced_flag, voiced_probs = librosa.pyin(x, fmin=fmin, fmax=fmax,
-                                                  sr=sr, frame_length=pitch_N)
-    
-    # append one zero for correct length with f_0
-    x = np.concatenate((x, np.zeros(1)))
-    
-    f_out = freq_scale(f_0, scale)
-    
-    # pitch shifting factor rho
-    rho = f_out / f_0
-    
-    y = pitch_shift_rollers(x, sr, rho, pitch_hop_size)
-    return (y / np.abs(np.max(y))) * np.abs(np.max(x)) # normalization
-
-# -----------------------------------------------------------------------------
-
-def pitch_shift_rollers(x, fs, psr, N, order=2, n=100):
+class Reshifter:
     """
-    Time variant 'Rollers' pitch-shifting algorithm.
-    x: input signal
-    fs: sampling rate
-    psr: list of pitch-shifting ratios for x
-    N: pitch analysis block size of the pitch tracking algorithm
-    order: filter order of the used filter bank
-    n: number of filters in the filter bank
+    A pitch shifting and pitch discretization effect class.
+    It uses pYIN to analyze the pitch of the signal and the 'Rollers'
+    algorithm for pitch-shifting.
     """
-    # format pitch shifting ratio
-    # unvoiced parts cause no pitch shift
-    psr = np.nan_to_num(psr, nan=1) # TODO: in pYIN machen
-    
-    
-    ### UPSAMPLING ###
-    L = N
-    
-    # Do the upsampling with the pitch shifting ratio
-    psr_up = np.repeat(psr, L) # this on its own is most likely sufficient
-    # optional smoothing
-    # control signal smoothing filter length
-    #l = 32
-    #h_smooth = signal.windows.triang(l) / (l-1)
-    #psr_up = signal.convolve(psr_up, h_smooth, mode="same")
-    
-    ## OR ##
-    
-    # Do upsampling by inserting zeros and linear interpolation
-    #psr_up = np.zeros(x.size)
-    #psr_up[::L] = psr
-    #h_interp = signal.windows.triang(2 * L - 1)
-    #psr_up = signal.convolve(psr_up, h_interp, mode="same")
-    
-    ### UPSAMPLING ###
-    
-    
-    # divide input into frequency bands
-    filt_bank = Filterbank(n, order, fs)
-    x_filtered = filt_bank.filt(x)
-    
-    # frequency shifting in every band
-    out_signals = []
-    t = np.linspace(0, x_filtered[0].size/fs, x_filtered[0].size)
-    for i in range(len(x_filtered)):
-        # calculate time variant carrier frequencies for every block
-        fc = filt_bank.fcs[i]
-        f_shift = fc * psr_up - fc
+
+    def __init__(self, sr=44100, a_N=1024, a_hop=512, a_fmin=60, a_fmax=2000,
+                 filt_order=2, filt_num=100):
+        """
+        Constructor
+        sr: sample rate of the signal to process
+        a_N: pitch analysis block size
+        a_hop: pitch analysis hop size
+        a_fmin: pitch analysis minimum tracked frequency
+        a_fmax: pitch analysis maximum tracked frequency
+        filt_order: used filter order in filter bank for pitch shifting
+        filt_num: used number of bands in filter bank for pitch shifting
+        """
+        self.sr = sr
+        librosa['sr'] = sr
         
-        # integrate frequency function for FM of the frequency shifting carrier
-        w_int = integrate.cumulative_trapezoid(2*np.pi*f_shift, t, initial=0)
+        self.a_N = a_N
+        librosa['n_fft'] = a_N
+
+        self.a_hop = a_hop
+        librosa['hop_length'] = a_hop
         
-        # frequency shifting with time variable carrier frequency
-        carrier = np.exp(1j*w_int)
-        band = (signal.hilbert(x_filtered[i]) * carrier).real
-        out_signals.append(band)
+        self.a_fmin = a_fmin
+        self.a_fmax = a_fmax
     
-    # add bands together
-    y = np.zeros(out_signals[0].size)
-    for sig in out_signals:
-        y += sig
-    
-    return y
+        self.filt_order = filt_order
+        self.filt_num = filt_num
+        self.filt_bank = Filterbank(filt_num, filt_order, sr)
 
-# -----------------------------------------------------------------------------
 
-def freq_scale(f_0, scale='chromatic', tune=440):
-    """
-    The discrete frequency scaling function for the desired pitch.
-    frequency scaling: chromatic or wholetone
-    f_0...input frequency
-    tune...tuning frequency
-    return discrete tuned frequencies
-    """
-    # TODO: add new scales like major, minor, etc.
-    if scale in ('chromatic', 'chrom', 'c'):
-        n_tones = 12
-    elif scale in ('wholetone', 'whole', 'w'):
-        n_tones = 6
-    elif scale in ('thirds', 'third', 't'):
-        n_tones = 3
-    elif scale in ('tritones', 'tritone', 'tri'):
-        n_tones = 2
-    
-    tone = n_tones * np.log2(f_0/tune)
-    discrete = np.round(tone)
-    return tune * (2 ** (discrete / n_tones))
+    def freq_scale(self, f_0, scale='chromatic', tune=440):
+        """
+        The discrete frequency scaling function for the desired pitch.
+        f_0: input frequency
+        tune: tuning frequency
+        
+        Returns the discrete tuned frequencies.
+        """
+        # TODO: add new scales like major, minor, etc.
+        if scale in ('chromatic', 'chrom', 'c'):
+            n_tones = 12
+        elif scale in ('wholetone', 'whole', 'w'):
+            n_tones = 6
+        elif scale in ('thirds', 'third', 't'):
+            n_tones = 3
+        elif scale in ('tritones', 'tritone', 'tri'):
+            n_tones = 2
+        
+        tone = n_tones * np.log2(f_0/tune)
+        discrete = np.round(tone)
+        return tune * (2 ** (discrete / n_tones))
 
-# -----------------------------------------------------------------------------
+
+    def discretize(self, x, scale='chromatic'):
+        """
+        Discretize the pitch of the signal 'x' to the given 'scale'.
+        x: signal to be pitch discretized
+        scale: the scale, the pitch should be discretized to
+        
+        scale choices:
+            * 'chromatic', 'chrom', 'c'
+            * 'wholetone', 'whole', 'w'
+            * 'thirds', 'third', 't'
+            * 'tritones', 'tritone', 'tri'
+        
+        Returns the pitch discretized signal according to the 'scale'.
+        """
+        # zero padding because librosa pYIN does this internally
+        x = np.concatenate((x, np.zeros(self.a_N - (x.size % self.a_N) - 1)))
+        
+        f_0, voiced_flag, voiced_probs = librosa.pyin(x, fmin=self.a_fmin,
+                                                      fmax=self.a_fmax,
+                                                      sr=self.sr,
+                                                      frame_length=self.a_N)
+        
+        # append one zero for correct length with f_0
+        x = np.concatenate((x, np.zeros(1)))
+        
+        f_out = self.freq_scale(f_0, scale)
+        
+        # pitch shifting factor rho
+        psr = f_out / f_0
+        
+        y = self.pitch_shift(x, psr)
+        return (y / np.abs(np.max(y))) * np.abs(np.max(x)) # normalization
+
+
+    def pitch_shift(self, x, psr):
+        """
+        Time variant 'Rollers' pitch-shifting algorithm.
+        x: input signal
+        fs: sampling rate
+        psr: list of pitch-shifting ratios for x
+        N: pitch analysis block size of the pitch tracking algorithm
+        order: filter order of the used filter bank
+        n: number of filters in the filter bank
+        
+        Returns the pitch shifted signal according to 'psr'.
+        """
+        
+        # fs, N, order=2, n=100
+        fs = self.sr
+        
+        # format pitch shifting ratio
+        # unvoiced parts cause no pitch shift
+        psr = np.nan_to_num(psr, nan=1)
+        
+        
+        ### UPSAMPLING from control rate to audio rate ###
+        L = self.a_hop
+        
+        ## Do the upsampling of the pitch shifting ratio ##
+        
+        psr_up = np.repeat(psr, L) # this on its own is most likely sufficient
+        # optional smoothing
+        # control signal smoothing filter length
+        #l = 32
+        #h_smooth = signal.windows.triang(l) / (l-1)
+        #psr_up = signal.convolve(psr_up, h_smooth, mode="same")
+        
+        ## OR ##
+        
+        ## Do upsampling by inserting zeros and linear interpolation ##
+        
+        #psr_up = np.zeros(x.size)
+        #psr_up[::L] = psr
+        #h_interp = signal.windows.triang(2 * L - 1)
+        #psr_up = signal.convolve(psr_up, h_interp, mode="same")
+        
+        ### UPSAMPLING ###
+        
+        
+        # divide input into frequency bands
+        x_filtered = self.filt_bank.filt(x)
+        
+        # frequency shifting in every band
+        out_signals = []
+        t = np.linspace(0, x_filtered[0].size/fs, x_filtered[0].size)
+        for i in range(len(x_filtered)):
+            # calculate time variant carrier frequencies for every block
+            fc = self.filt_bank.fcs[i]
+            f_shift = fc * psr_up - fc
+            
+            # integrate frequency function for FM of the frequency shifting carrier
+            w_int = integrate.cumulative_trapezoid(2*np.pi*f_shift, t, initial=0)
+            
+            # frequency shifting with time variable carrier frequency
+            carrier = np.exp(1j*w_int)
+            band = (signal.hilbert(x_filtered[i]) * carrier).real
+            out_signals.append(band)
+        
+        # add bands together
+        y = np.zeros(out_signals[0].size)
+        for sig in out_signals:
+            y += sig
+        
+        return y
+
 
 def _my_plot(sig, sr, title=''):
     """Plot waveform and spectrogram of signal sig with ramplerate sr."""
@@ -171,13 +214,17 @@ def _test():
     sr = 44100
     #x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
     
-    x, sr = librosa.load('../../samples/Toms_diner.wav')
+    #x, sr = librosa.load('../../samples/Toms_diner.wav')
     
     pos = 5
     dur = 20
-    # x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
+    x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
     
-    y = reshift(x, sr, scale='w')
+    #y = reshift(x, sr, scale='w')
+    
+    ## new OOP variant
+    reshifter = Reshifter(sr=sr)
+    y = reshifter.discretize(x, scale='w')
     
     _my_plot(x, sr, "original signal")
     

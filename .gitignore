@@ -1,4 +1,4 @@
 # git ignores the following files and paths
 notebooks/.ipynb_checkpoints/
 py/__pycache__
-test.wav
+test*.wav

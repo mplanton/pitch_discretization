@@ -20,7 +20,7 @@ _librosa.display = _display
 librosa = Preset(_librosa)
 librosa['sr'] = 44100
 
-from utility import Filterbank
+from Filter import Filterbank
 
 # -----------------------------------------------------------------------------
 

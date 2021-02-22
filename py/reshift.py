@@ -212,13 +212,13 @@ def _test():
     fmin = 500
     fmax = 4*500
     sr = 44100
-    #x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
+    x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
     
     #x, sr = librosa.load('../../samples/Toms_diner.wav')
     
     pos = 5
     dur = 20
-    x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
+    #x, sr = librosa.load("../../samples/ave-maria.wav", offset=pos, duration=dur)
     
     #y = reshift(x, sr, scale='w')
     

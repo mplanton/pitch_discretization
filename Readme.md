@@ -60,6 +60,6 @@ Installation
 
 ```
 conda activate base
-pip3 install presets librosa
+pip3 install presets librosa snakeviz
 ```
 

@@ -32,7 +32,7 @@ class Reshifter:
     """
 
     def __init__(self, sr=44100, a_N=1024, a_hop=512, a_fmin=60, a_fmax=2000,
-                 filt_order=2, filt_num=100):
+                 a_res=0.1, filt_order=2, filt_num=100):
         """
         Constructor
         sr: sample rate of the signal to process
@@ -54,6 +54,7 @@ class Reshifter:
         
         self.a_fmin = a_fmin
         self.a_fmax = a_fmax
+        self.a_res = a_res
     
         self.filt_order = filt_order
         self.filt_num = filt_num
@@ -98,12 +99,13 @@ class Reshifter:
         Returns the pitch discretized signal according to the 'scale'.
         """
         # zero padding because librosa pYIN does this internally
-        x = np.concatenate((x, np.zeros(self.a_N - (x.size % self.a_N) - 1)))
+        x = np.concatenate((x, np.zeros(self.a_hop - (x.size % self.a_hop) - 1)))
         
         f_0, voiced_flag, voiced_probs = librosa.pyin(x, fmin=self.a_fmin,
                                                       fmax=self.a_fmax,
                                                       sr=self.sr,
-                                                      frame_length=self.a_N)
+                                                      frame_length=self.a_N,
+                                                      resolution=self.a_res)
         
         # append one zero for correct length with f_0
         x = np.concatenate((x, np.zeros(1)))
@@ -212,9 +214,9 @@ def _test():
     fmin = 500
     fmax = 4*500
     sr = 44100
-    x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
+    #x = librosa.chirp(fmin, fmax, sr=sr, duration=dur)
     
-    #x, sr = librosa.load('../../samples/Toms_diner.wav')
+    x, sr = librosa.load('../../samples/Toms_diner.wav')
     
     pos = 5
     dur = 20
@@ -223,7 +225,8 @@ def _test():
     #y = reshift(x, sr, scale='w')
     
     ## new OOP variant
-    reshifter = Reshifter(sr=sr)
+    reshifter = Reshifter(sr=sr, a_fmin=100, a_fmax=800, a_N=512, a_hop=512,
+                          a_res=0.15)
     y = reshifter.discretize(x, scale='w')
     
     _my_plot(x, sr, "original signal")

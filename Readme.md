@@ -61,5 +61,6 @@ Installation
 ```
 conda activate base
 pip3 install presets librosa snakeviz
+sudo apt install gcc make linux-headers-$(uname -r) build-essential automake autoconf libtool gettext git libjack-jackd2-dev libasound2-dev
 ```
 

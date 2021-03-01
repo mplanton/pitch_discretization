@@ -1,0 +1,19 @@
+#N canvas 540 404 786 620 12;
+#X obj 56 117 phasor~ 440;
+#X floatatom 56 89 5 0 0 0 - - -;
+#X obj 96 244 oszi~;
+#X text 5 9 oszi~;
+#X text 70 7 show the waveform of the input signal;
+#X obj 342 85 vsl 15 128 0 3 0 0 empty empty scale 0 -9 0 10 -262144
+-1 -1 2900 1;
+#X floatatom 342 221 5 0 0 0 - - -;
+#X text 11 590 Manuel Planton 2021;
+#X obj 588 81 vsl 15 128 -1 1 0 0 empty empty offset 0 -9 0 10 -262144
+-1 -1 5600 1;
+#X floatatom 588 217 5 0 0 0 - - -;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 5 0 6 0;
+#X connect 6 0 2 1;
+#X connect 8 0 9 0;
+#X connect 9 0 2 2;

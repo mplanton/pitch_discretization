@@ -4,3 +4,4 @@ py/__pycache__
 test*.wav
 
 pd/pd/
+pd/pd-aubio/

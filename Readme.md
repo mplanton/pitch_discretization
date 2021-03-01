@@ -13,6 +13,8 @@ Directories
 
 * py: implementation of the developed algorithms
 
+* pd: realtime implementation of the effect
+
 
 Pitch-Discretization
 --------------------
@@ -62,5 +64,8 @@ Installation
 conda activate base
 pip3 install presets librosa snakeviz
 sudo apt install gcc make linux-headers-$(uname -r) build-essential automake autoconf libtool gettext git libjack-jackd2-dev libasound2-dev
+sudo apt install libaubio-dev
+pd/make_pd.sh
+pd/make_libs.sh
 ```
 

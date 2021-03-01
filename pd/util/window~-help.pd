@@ -1,0 +1,24 @@
+#N canvas 918 438 566 400 12;
+#X obj 9 81 block~ 2048;
+#X obj 9 110 table win 2048;
+#X msg 14 182 hann;
+#X obj 13 297 tabwrite~ win;
+#X msg 120 263 bang;
+#X obj 14 243 window~ 2048;
+#X text 14 25 inlet: rect \, cos \, tri \, hann;
+#X text 6 3 window~ <size>;
+#X text 3 47 output a window function for every dsp block of length
+size;
+#X msg 60 182 cos;
+#X msg 100 182 tri;
+#X msg 142 182 rect;
+#X text 117 110 <--- look at this;
+#X text 187 182 <--- choose window type;
+#X text 165 263 <--- show output;
+#X text 13 374 Manuel Planton 2021;
+#X connect 2 0 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 9 0 5 0;
+#X connect 10 0 5 0;
+#X connect 11 0 5 0;

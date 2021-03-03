@@ -1,0 +1,75 @@
+#N canvas 488 96 965 960 12;
+#X text 130 4 Single Sideband Modulation aka frequency shifting;
+#X text 131 32 The signal sideband modulator gives you only one sideband
+for each frequency in the input signal (whereas ring modulation gave
+both a positive and negative sideband). You can set the shift frequency
+positive to shift all frequencies upward \, or negative to shift them
+downwards., f 60;
+#X text 522 937 taken from H09.ssb.modulation.pd;
+#X text 5 937 Manuel Planton 2021;
+#X obj 46 287 osc~;
+#X obj 46 160 loadbang;
+#X obj 69 240 * 2;
+#X obj 103 241 * 3;
+#X obj 46 210 t f f f;
+#X obj 86 287 osc~;
+#X obj 126 287 osc~;
+#X obj 48 355 +~;
+#X floatatom 83 410 5 0 0 1 freq_shift - -;
+#X msg 46 185 1000;
+#X obj 56 902 dac~;
+#X obj 68 870 *~;
+#X obj 164 637 hradio 15 1 0 2 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X obj 26 738 *~;
+#X obj 44 683 sel 0;
+#X msg 44 708 1;
+#X msg 76 708 0;
+#X floatatom 86 843 5 0 0 1 vol - -;
+#X obj 146 738 *~;
+#X msg 164 700 1;
+#X msg 196 700 0;
+#X obj 164 675 sel 1;
+#X obj 87 318 *~ 0.3;
+#X obj 137 318 *~ 0.1;
+#X obj 49 453 ssb~;
+#X text 246 146 There are some artifacts in the output of the SSB.
+The lower sideband is not fully cancelled maybe because of the implementation
+of the hilbert transform to get the analytic signal. The Hilbert transform
+is implemented using allpass filters.;
+#X obj 412 306 util/mag_spec~;
+#X obj 418 631 util/mag_spec~;
+#X text 6 4 [ssb~];
+#X connect 4 0 11 0;
+#X connect 5 0 13 0;
+#X connect 6 0 9 0;
+#X connect 7 0 10 0;
+#X connect 8 0 4 0;
+#X connect 8 1 6 0;
+#X connect 8 2 7 0;
+#X connect 9 0 26 0;
+#X connect 10 0 27 0;
+#X connect 11 0 17 0;
+#X connect 11 0 28 0;
+#X connect 11 0 30 0;
+#X connect 12 0 28 1;
+#X connect 13 0 8 0;
+#X connect 15 0 14 0;
+#X connect 15 0 14 1;
+#X connect 16 0 18 0;
+#X connect 16 0 25 0;
+#X connect 17 0 15 0;
+#X connect 18 0 19 0;
+#X connect 18 1 20 0;
+#X connect 19 0 17 1;
+#X connect 20 0 17 1;
+#X connect 21 0 15 1;
+#X connect 22 0 15 0;
+#X connect 23 0 22 1;
+#X connect 24 0 22 1;
+#X connect 25 0 23 0;
+#X connect 25 1 24 0;
+#X connect 26 0 11 0;
+#X connect 27 0 11 1;
+#X connect 28 0 22 0;
+#X connect 28 0 31 0;

@@ -1,0 +1,17 @@
+#N canvas 49 414 527 300 12;
+#X obj 52 32 inlet bang;
+#X obj 42 266 outlet~ dirac;
+#X obj 51 136 tabplay~ \$0-kron;
+#X msg 367 100 1;
+#X obj 367 125 tabwrite \$0-kron;
+#X obj 367 46 loadbang;
+#X obj 237 145 table \$0-kron 2;
+#X obj 367 72 t b b;
+#X msg 427 100 0;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X connect 3 0 4 0;
+#X connect 5 0 7 0;
+#X connect 7 0 3 0;
+#X connect 7 1 8 0;
+#X connect 8 0 4 1;

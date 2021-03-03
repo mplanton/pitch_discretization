@@ -1,0 +1,13 @@
+#N canvas 802 359 531 379 12;
+#X obj 148 101 dirac~;
+#X msg 148 71 bang;
+#X text 9 7 dirac~: output the unit impulse at bang msg;
+#X obj 267 226 table show 512;
+#X obj 185 169 loadbang;
+#X obj 185 194 metro 100;
+#X obj 149 225 tabwrite~ show;
+#X text 377 227 <---;
+#X connect 0 0 6 0;
+#X connect 1 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;

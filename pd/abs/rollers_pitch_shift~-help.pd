@@ -1,0 +1,35 @@
+#N canvas 847 191 703 550 12;
+#X declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
+#X obj 47 396 rollers_pitch_shift~ 300 1.25;
+#X obj 47 329 player~;
+#X obj 93 304 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X msg 47 275 ../../../samples/Toms_diner.wav;
+#X msg 57 245 ../../../samples/ave-maria.wav;
+#X text 12 12 rollers_pitch_shift~ <n_bands> <psr>;
+#X text 15 36 args:;
+#X text 28 56 - n_bands: number of bands of the filter bank;
+#X text 28 76 - psr: pitch shifting ratio;
+#X text 15 96 inlets:;
+#X text 28 116 1) input signal;
+#X text 15 166 outlets:;
+#X text 28 186 1) output signal;
+#X text 10 212 pitch shifting by frequency shifting of subbands;
+#X text 8 523 Manuel Planton 2021;
+#X obj 48 465 *~;
+#X floatatom 74 430 5 0 0 0 - - -;
+#X obj 39 495 dac~;
+#X floatatom 248 360 5 0 0 1 psr - -;
+#X obj 282 30 declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
+#X text 283 6 maybe you have to change this to your iemlib install
+path;
+#X text 28 136 2) psr: pitch shifting ratio > 0;
+#X connect 0 0 15 0;
+#X connect 1 0 0 0;
+#X connect 2 0 1 1;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 15 0 17 0;
+#X connect 15 0 17 1;
+#X connect 16 0 15 1;
+#X connect 18 0 0 1;

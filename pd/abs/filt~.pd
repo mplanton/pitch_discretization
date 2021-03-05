@@ -1,0 +1,15 @@
+#N canvas 261 438 403 300 12;
+#X obj 105 104 unpack f f;
+#X obj 95 144 bpw2~;
+#X obj 20 200 s~ band\$1;
+#X obj 24 33 inlet~ sig;
+#X obj 94 239 outlet~ band;
+#X obj 113 34 inlet ctl;
+#X text 20 3 one band of a filter bank;
+#X text 106 191 do something here with the band signal;
+#X connect 0 0 1 1;
+#X connect 0 1 1 2;
+#X connect 1 0 2 0;
+#X connect 1 0 4 0;
+#X connect 3 0 1 0;
+#X connect 5 0 0 0;

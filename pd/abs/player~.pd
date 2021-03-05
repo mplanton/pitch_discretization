@@ -1,0 +1,15 @@
+#N canvas 72 372 599 399 12;
+#X obj 120 246 readsf~;
+#X obj 113 356 outlet~;
+#X obj 137 10 inlet;
+#X obj 147 94 symbol \$1;
+#X msg 147 119 open \$1 \, 1;
+#X obj 256 149 spigot;
+#X obj 300 14 inlet;
+#X connect 0 0 1 0;
+#X connect 0 1 5 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 0 0;
+#X connect 5 0 3 0;
+#X connect 6 0 5 1;

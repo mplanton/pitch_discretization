@@ -1,6 +1,4 @@
-#N canvas 72 393 911 536 12;
-#X obj 74 79 aubiopitch~;
-#X text 159 78 YIN pitch-tracking;
+#N canvas 439 381 1254 536 12;
 #X obj 127 349 /;
 #X text 43 87 f_0;
 #X text 86 277 f_out;
@@ -31,26 +29,37 @@
 <transpose>, f 72;
 #X obj 625 189 f \$6;
 #X obj 625 163 loadbang;
-#X connect 0 0 6 0;
-#X connect 0 0 26 0;
-#X connect 2 0 20 0;
-#X connect 6 1 23 0;
-#X connect 8 0 0 0;
-#X connect 8 0 10 0;
-#X connect 10 0 9 0;
-#X connect 14 0 2 0;
-#X connect 14 0 24 0;
-#X connect 15 0 10 1;
-#X connect 17 0 14 1;
-#X connect 18 0 14 2;
-#X connect 19 0 20 1;
-#X connect 20 0 15 0;
-#X connect 22 0 21 0;
-#X connect 23 0 14 0;
-#X connect 23 1 2 1;
-#X connect 23 2 24 1;
-#X connect 24 0 25 0;
-#X connect 25 0 22 0;
-#X connect 27 0 14 3;
-#X connect 29 0 14 3;
-#X connect 30 0 29 0;
+#X text 220 80 low latency pitch tracking;
+#X obj 74 78 aubiopitch~ yin 882;
+#X text 797 86 The YIN pitch-tracking block size influences fmin. YIN
+needs blocks of at least 2*Tmax for proper analysis. For fmin=100Hz
+\, we get Tmax=20ms \, so the minimum latency is 2*Tmax=40ms. At fs=44100Hz
+\, we get a block size of 882 samples.;
+#X text 82 57 N=882 for fmin=100Hz @ fs=44100;
+#X text 799 178 For a more efficient implementation \, we have to round
+to a block size of a power of 2 (FFT). So if we round up \, we need
+a block size of 1024 for fmin=86Hz @ fs=44100Hz. If we round down to
+a block size of 512 samples \, we get fmin=172Hz.;
+#X connect 0 0 18 0;
+#X connect 4 1 21 0;
+#X connect 6 0 8 0;
+#X connect 6 0 30 0;
+#X connect 8 0 7 0;
+#X connect 12 0 0 0;
+#X connect 12 0 22 0;
+#X connect 13 0 8 1;
+#X connect 15 0 12 1;
+#X connect 16 0 12 2;
+#X connect 17 0 18 1;
+#X connect 18 0 13 0;
+#X connect 20 0 19 0;
+#X connect 21 0 12 0;
+#X connect 21 1 0 1;
+#X connect 21 2 22 1;
+#X connect 22 0 23 0;
+#X connect 23 0 20 0;
+#X connect 25 0 12 3;
+#X connect 27 0 12 3;
+#X connect 28 0 27 0;
+#X connect 30 0 4 0;
+#X connect 30 0 24 0;

@@ -1,4 +1,4 @@
-#N canvas 996 351 656 515 12;
+#N canvas 944 351 656 515 12;
 #X text 124 103 number of bands;
 #X text 7 484 Manuel Planton 2021;
 #N canvas 72 96 612 902 make_log_freqs 0;
@@ -103,7 +103,6 @@ order bandpass filters. In every band there is a frequency shifter.
 #X msg 292 168 pitch shifting ratio is \$1 but must be positive;
 #X obj 16 367 clone band_shift~ 300;
 #X text 10 5 rollers_pitch_shift~;
-#X text 174 5 time variant pitch shifting;
 #X obj 15 42 inlet~ sin_ig;
 #X obj 88 77 loadbang;
 #X obj 88 103 i \$1;
@@ -111,6 +110,8 @@ order bandpass filters. In every band there is a frequency shifter.
 #X obj 15 458 outlet~ out_sig;
 #X obj 301 91 loadbang;
 #X obj 301 116 f \$2;
+#X text 174 5 time variant pitch shifting by subband frequency shifting
+;
 #X connect 2 0 7 0;
 #X connect 3 0 4 0;
 #X connect 4 0 16 1;
@@ -126,10 +127,10 @@ order bandpass filters. In every band there is a frequency shifter.
 #X connect 13 0 15 0;
 #X connect 13 1 12 0;
 #X connect 15 0 14 0;
-#X connect 16 0 23 0;
-#X connect 19 0 16 0;
-#X connect 20 0 21 0;
-#X connect 21 0 8 0;
-#X connect 22 0 13 0;
-#X connect 24 0 25 0;
-#X connect 25 0 13 0;
+#X connect 16 0 22 0;
+#X connect 18 0 16 0;
+#X connect 19 0 20 0;
+#X connect 20 0 8 0;
+#X connect 21 0 13 0;
+#X connect 23 0 24 0;
+#X connect 24 0 13 0;

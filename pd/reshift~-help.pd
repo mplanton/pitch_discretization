@@ -1,4 +1,4 @@
-#N canvas 503 102 1172 769 12;
+#N canvas 399 102 1172 769 12;
 #X declare -path pd-aubio/build;
 #X declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #X obj 14 591 aubio;
@@ -87,15 +87,15 @@ of the effect., f 74;
 #X floatatom 607 331 5 0 0 0 - - -;
 #X text 18 487 required libraries:;
 #X obj 763 659 hsl 128 15 0 127 0 0 empty empty vol -2 -8 0 10 -262144
--1 -1 9600 1;
+-1 -1 9900 1;
 #X obj 760 679 dbtorms;
 #X floatatom 760 704 5 0 0 0 - - -;
 #X obj 570 134 vsl 15 160 200 1200 1 0 empty empty freq 0 -9 0 10 -262144
--1 -1 1300 1;
+-1 -1 5800 1;
 #X text 21 414 2) frequency error in Hertz between the input and output
 signal, f 64;
-#X obj 852 497 hsl 128 15 -200 200 0 0 empty empty empty -2 -8 0 10
--262144 -1 -1 6777 1;
+#X obj 852 497 hsl 128 15 -50 50 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 12700 1;
 #X floatatom 953 446 5 0 0 1 f_0 - -;
 #X text 21 434 3) tracked fundamental frequency of the input signal
 , f 64;
@@ -105,6 +105,10 @@ signal, f 64;
 #X text 21 204 - transpose: transposition in semitones, f 74;
 #X text 21 344 5) float transpose;
 #X obj 746 417 reshift~ F# aeolian 440 200;
+#X obj 518 418 adc~;
+#X obj 518 465 *~;
+#X floatatom 536 442 5 0 0 0 - - -;
+#X text 508 487 use headphones...;
 #X connect 4 0 7 1;
 #X connect 5 0 7 0;
 #X connect 6 0 7 0;
@@ -133,3 +137,7 @@ signal, f 64;
 #X connect 51 0 26 1;
 #X connect 51 1 35 0;
 #X connect 51 2 45 0;
+#X connect 52 0 53 0;
+#X connect 53 0 51 0;
+#X connect 53 0 26 0;
+#X connect 54 0 53 1;

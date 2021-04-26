@@ -3,7 +3,7 @@ Reshift
 
 Repeated Pitch-shifting for Frequency Discretization as Artistic Effect for Speech Signals.
 
-The goal is to develop a real-time capable pitch discretization effect similar to *Autotune* and generate an artistic effect named *reshift* by repeatedly applying it to a speech signal.
+The goal is to develop a real-time capable pitch discretization effect named *reshift*  similar to *Autotune* and generate artistic effects by repeatedly applying it to a speech signal.
 
 
 Directories
@@ -13,7 +13,7 @@ Directories
 
 * py: implementation of the developed algorithms
 
-* pd: realtime implementation of the effect
+* pd: realtime implementation of Reshift and different audio effects using Reshift
 
 
 Pitch-Discretization
@@ -28,6 +28,20 @@ A pitch discretization effect consists of
 * and of a pitch-shifting algorithm.
 
 For pitch-tracking, *pYIN* is used and for pitch-shifting, the *Rollers* algorithm has been chosen.
+
+
+Audio Effects:
+--------------
+
+* pd/FX1.pd: audio effects using one instance of Reshift
+
+* pd/FX2.pd: audio effects using two instances of Reshift
+
+* pd/FX_many.pd: audio effects using many instances of Reshift
+
+* pd/parallelism.pd: template for using many instances of Reshift in separate subprocesses using reshift~_process.pd
+
+* pd/reshift~.pd: the Reshift pitch-discretization effect
 
 
 Notebooks

@@ -1,4 +1,4 @@
-#N canvas 812 161 897 640 12;
+#N canvas 396 161 897 640 12;
 #X declare -path pd-aubio/build;
 #X declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #N canvas 72 96 450 300 include 0;
@@ -7,7 +7,7 @@
 #X obj 15 24 declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #X restore 23 17 pd include;
 #X text 110 18 Artistic effects using one instance of reshift~.;
-#X obj 464 132 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 464 132 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X msg 393 45 ../../../samples/Toms_diner.wav;
 #X msg 408 73 ../../../samples/ave-maria.wav;
@@ -16,39 +16,41 @@
 #X obj 307 101 openpanel;
 #X text 619 45 in F#m;
 #X obj 390 179 s~ \$0-sig;
-#X obj 362 520 *~;
-#X obj 353 550 dac~;
-#X obj 403 479 hsl 128 15 0 127 0 0 empty empty vol -2 -8 0 10 -262144
--1 -1 0 1;
-#X obj 400 499 dbtorms;
-#X floatatom 400 524 5 0 0 0 - - -;
-#X obj 264 479 catch~ \$0-fx_sig;
+#X obj 444 576 *~;
+#X obj 435 606 dac~;
+#X obj 545 535 hsl 128 15 0 127 0 0 empty empty vol -2 -8 0 10 -262144
+-1 -1 9900 1;
+#X obj 542 555 dbtorms;
+#X floatatom 542 580 5 0 0 0 - - -;
+#X obj 444 490 catch~ \$0-fx_sig;
 #N canvas 72 405 505 413 pitch_discretization 0;
-#X obj 38 301 throw~ \$0-fx_sig;
-#X obj 38 166 r~ \$0-sig;
-#X symbolatom 88 231 3 0 0 2 key - -;
-#X symbolatom 140 231 10 0 0 2 scale - -;
-#X floatatom 219 232 5 0 0 2 t_smooth - -;
-#X floatatom 279 231 5 0 0 2 transpose - -;
+#X obj 38 351 throw~ \$0-fx_sig;
+#X obj 38 216 r~ \$0-sig;
+#X symbolatom 88 281 3 0 0 2 key - -;
+#X symbolatom 140 281 10 0 0 2 scale - -;
+#X floatatom 219 282 5 0 0 2 t_smooth - -;
+#X floatatom 279 281 5 0 0 2 transpose - -;
 #X obj 310 55 switch~;
 #X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 310 6 inlet;
-#X obj 37 256 reshift~ C ionian 440 200 15 0;
-#X text 18 84 Pitch discretization to a musical scale using n=200 bands
-for high quality.;
 #X obj 370 5 loadbang;
 #X msg 370 30 0;
-#X connect 1 0 9 0;
-#X connect 2 0 9 1;
-#X connect 3 0 9 2;
-#X connect 4 0 9 3;
-#X connect 5 0 9 4;
+#X obj 37 306 reshift~ F# aeolian 440 200 15 0;
+#X text 18 84 Pitch discretization to a musical scale using n=200 bands
+for high quality. Sounds best if the right key and scale of the audio
+material is found.;
+#X text 21 137 You can "autotune" the input and change its scale.;
+#X connect 1 0 11 0;
+#X connect 2 0 11 1;
+#X connect 3 0 11 2;
+#X connect 4 0 11 3;
+#X connect 5 0 11 4;
 #X connect 7 0 6 0;
 #X connect 8 0 7 0;
-#X connect 9 0 0 0;
-#X connect 11 0 12 0;
-#X connect 12 0 6 0;
+#X connect 9 0 10 0;
+#X connect 10 0 6 0;
+#X connect 11 0 0 0;
 #X restore 34 309 pd pitch_discretization;
 #X obj 34 285 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -81,9 +83,9 @@ shifting.;
 #X connect 11 0 12 0;
 #X connect 12 0 6 0;
 #X restore 32 252 pd discrete_freq_shifter;
-#X obj 34 342 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 34 342 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#N canvas 72 262 1822 574 inharmonizer 0;
+#N canvas 72 266 1839 574 inharmonizer 0;
 #X obj 24 517 throw~ \$0-fx_sig;
 #X obj 25 134 r~ \$0-sig;
 #X symbolatom 75 243 3 0 0 2 key - -;
@@ -91,7 +93,7 @@ shifting.;
 #X floatatom 206 244 5 0 0 2 t_smooth - -;
 #X floatatom 266 243 5 0 0 2 transpose - -;
 #X obj 310 55 switch~;
-#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 310 6 inlet;
 #X obj 24 269 reshift~ C wholetone 440 2 15 0;
@@ -232,7 +234,7 @@ scale for bigger pitch shifts generates inharmonic sounds.;
 #X restore 34 366 pd inharmonizer;
 #X obj 36 398 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 209 253 505 356 vibrato 0;
+#N canvas 105 253 505 356 vibrato 0;
 #X obj 16 277 throw~ \$0-fx_sig;
 #X obj 16 142 r~ \$0-sig;
 #X symbolatom 66 207 3 0 0 2 key - -;
@@ -246,15 +248,14 @@ scale for bigger pitch shifts generates inharmonic sounds.;
 #X obj 15 232 reshift~ C ionian 440 200 15 0;
 #X obj 348 269 snapshot~;
 #X floatatom 388 177 5 0 0 1 range - -;
-#X obj 421 216 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
 #X obj 421 241 metro 10;
-#X obj 349 199 *~ 0.5;
 #X floatatom 350 117 5 0 0 2 freq - -;
 #X text 19 24 pitch discretized vibrato;
-#X obj 350 145 osc~ 3;
 #X obj 370 5 loadbang;
 #X msg 370 30 0;
+#X obj 421 208 loadbang;
+#X obj 350 145 osc~ 1;
+#X obj 349 199 *~ 3;
 #X connect 1 0 9 0;
 #X connect 2 0 9 1;
 #X connect 3 0 9 2;
@@ -264,60 +265,20 @@ scale for bigger pitch shifts generates inharmonic sounds.;
 #X connect 8 0 7 0;
 #X connect 9 0 0 0;
 #X connect 10 0 9 4;
-#X connect 11 0 14 1;
-#X connect 12 0 13 0;
-#X connect 13 0 10 0;
-#X connect 14 0 10 0;
-#X connect 15 0 17 0;
-#X connect 17 0 14 0;
-#X connect 18 0 19 0;
-#X connect 19 0 6 0;
-#X restore 36 422 pd vibrato;
-#X obj 267 226 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#N canvas 609 245 669 456 pitch_disc_feed_forward_delay 0;
-#X obj 255 390 throw~ \$0-fx_sig;
-#X obj 254 161 r~ \$0-sig;
-#X symbolatom 305 253 3 0 0 2 key - -;
-#X symbolatom 357 253 10 0 0 2 scale - -;
-#X floatatom 436 254 5 0 0 2 t_smooth - -;
-#X floatatom 496 253 5 0 0 2 transpose - -;
-#X obj 310 55 switch~;
-#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X obj 310 6 inlet;
-#X obj 28 306 delwrite~ \$0-pdffd 1000;
-#X obj 27 204 delread~ \$0-pdffd 400;
-#X obj 27 268 *~ 0.3;
-#X floatatom 27 165 5 0 0 2 delay - -;
-#X floatatom 76 166 5 0 0 2 feedback - -;
-#X obj 254 278 reshift~ C chromatic 440 200 0 0;
-#X obj 66 243 clip -0.9 0.9;
-#X text 18 84 Delay with pitch discretization in feed forward path.
-(interesting with transposition);
-#X obj 370 5 loadbang;
-#X msg 370 30 0;
-#X connect 1 0 9 0;
-#X connect 1 0 14 0;
-#X connect 2 0 14 1;
-#X connect 3 0 14 2;
-#X connect 4 0 14 3;
-#X connect 5 0 14 4;
-#X connect 7 0 6 0;
-#X connect 8 0 7 0;
-#X connect 10 0 0 0;
-#X connect 10 0 11 0;
-#X connect 11 0 9 0;
+#X connect 11 0 19 1;
 #X connect 12 0 10 0;
-#X connect 13 0 15 0;
-#X connect 14 0 0 0;
-#X connect 15 0 11 1;
-#X connect 17 0 18 0;
-#X connect 18 0 6 0;
-#X restore 267 250 pd pitch_disc_feed_forward_delay;
-#X obj 267 286 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X connect 13 0 18 0;
+#X connect 15 0 16 0;
+#X connect 16 0 6 0;
+#X connect 17 0 12 0;
+#X connect 18 0 19 0;
+#X connect 19 0 10 0;
+#X restore 36 422 pd vibrato;
+#X obj 368 227 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 245 245 784 628 pitch_disc_feedback_delay 0;
+#X obj 368 347 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#N canvas 638 316 784 628 pitch_disc_feedback_delay 0;
 #X obj 255 595 throw~ \$0-fx_sig;
 #X obj 254 161 r~ \$0-sig;
 #X symbolatom 442 314 3 0 0 2 key - -;
@@ -356,8 +317,162 @@ with different scales and transposition.;
 #X connect 15 0 14 0;
 #X connect 16 0 17 0;
 #X connect 17 0 6 0;
-#X restore 267 310 pd pitch_disc_feedback_delay;
+#X restore 368 371 pd pitch_disc_feedback_delay;
 #X msg 421 100 ../../../samples/saxophone-weep.wav;
+#N canvas 72 291 669 456 pitch_disc_feed_forward_delay_dry 0;
+#X obj 255 390 throw~ \$0-fx_sig;
+#X obj 254 161 r~ \$0-sig;
+#X symbolatom 305 253 3 0 0 2 key - -;
+#X symbolatom 357 253 10 0 0 2 scale - -;
+#X floatatom 436 254 5 0 0 2 t_smooth - -;
+#X floatatom 496 253 5 0 0 2 transpose - -;
+#X obj 310 55 switch~;
+#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 310 6 inlet;
+#X obj 28 306 delwrite~ \$0-pdffd 1000;
+#X obj 27 204 delread~ \$0-pdffd 400;
+#X obj 27 268 *~ 0.3;
+#X floatatom 27 165 5 0 0 2 delay - -;
+#X floatatom 76 166 5 0 0 2 feedback - -;
+#X obj 66 243 clip -0.9 0.9;
+#X obj 370 5 loadbang;
+#X msg 370 30 0;
+#X obj 254 278 reshift~ C wholetone 440 200 0 3;
+#X text 18 84 Delay with pitch discretization in dry feed forward path.
+(interesting with transposition and different scales);
+#X connect 1 0 9 0;
+#X connect 1 0 17 0;
+#X connect 2 0 17 1;
+#X connect 3 0 17 2;
+#X connect 4 0 17 3;
+#X connect 5 0 17 4;
+#X connect 7 0 6 0;
+#X connect 8 0 7 0;
+#X connect 10 0 0 0;
+#X connect 10 0 11 0;
+#X connect 11 0 9 0;
+#X connect 12 0 10 0;
+#X connect 13 0 14 0;
+#X connect 14 0 11 1;
+#X connect 15 0 16 0;
+#X connect 16 0 6 0;
+#X connect 17 0 0 0;
+#X restore 368 250 pd pitch_disc_feed_forward_delay_dry;
+#X obj 368 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#N canvas 72 291 669 513 pitch_disc_feed_forward_delay_wet 0;
+#X obj 256 459 throw~ \$0-fx_sig;
+#X obj 255 230 r~ \$0-sig;
+#X symbolatom 375 323 3 0 0 2 key - -;
+#X symbolatom 427 323 10 0 0 2 scale - -;
+#X floatatom 506 324 5 0 0 2 t_smooth - -;
+#X floatatom 566 323 5 0 0 2 transpose - -;
+#X obj 310 55 switch~;
+#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 310 6 inlet;
+#X floatatom 28 234 5 0 0 2 delay - -;
+#X floatatom 77 235 5 0 0 2 feedback - -;
+#X obj 67 312 clip -0.9 0.9;
+#X obj 370 5 loadbang;
+#X msg 370 30 0;
+#X obj 28 273 delread~ \$0-pdffdw 400;
+#X obj 29 375 delwrite~ \$0-pdffdw 1000;
+#X obj 28 337 *~ 0.5;
+#X text 18 84 Delay with pitch discretization in feed forward wet path.
+Interesting with different scales and transposition. There are pitch
+jumps because the delay makes the input of reshift polyphonic.;
+#X obj 324 348 reshift~ C aeolian 440 200 0 -3;
+#X connect 1 0 15 0;
+#X connect 1 0 0 0;
+#X connect 2 0 18 1;
+#X connect 3 0 18 2;
+#X connect 4 0 18 3;
+#X connect 5 0 18 4;
+#X connect 7 0 6 0;
+#X connect 8 0 7 0;
+#X connect 9 0 14 0;
+#X connect 10 0 11 0;
+#X connect 11 0 16 1;
+#X connect 12 0 13 0;
+#X connect 13 0 6 0;
+#X connect 14 0 16 0;
+#X connect 14 0 18 0;
+#X connect 16 0 15 0;
+#X connect 18 0 0 0;
+#X restore 368 310 pd pitch_disc_feed_forward_delay_wet;
+#X text 14 610 Manuel Planton 2021;
+#X obj 37 457 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#N canvas 72 405 505 384 two_voices 0;
+#X obj 22 294 throw~ \$0-fx_sig;
+#X obj 22 159 r~ \$0-sig;
+#X symbolatom 102 224 3 0 0 2 key - -;
+#X symbolatom 154 224 10 0 0 2 scale - -;
+#X floatatom 233 225 5 0 0 2 t_smooth - -;
+#X floatatom 293 224 5 0 0 2 transpose - -;
+#X obj 310 55 switch~;
+#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 310 6 inlet;
+#X obj 370 5 loadbang;
+#X msg 370 30 0;
+#X text 18 84 Adding a pitch discretized voice to a signal. Sounds
+best if the right key and scale is found.;
+#X obj 51 249 reshift~ F# aeolian 440 200 15 -7;
+#X connect 1 0 0 0;
+#X connect 1 0 12 0;
+#X connect 2 0 12 1;
+#X connect 3 0 12 2;
+#X connect 4 0 12 3;
+#X connect 5 0 12 4;
+#X connect 7 0 6 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 10 0 6 0;
+#X connect 12 0 0 0;
+#X restore 37 481 pd two_voices;
+#X obj 37 515 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#N canvas 72 405 505 413 scramble 0;
+#X obj 31 293 throw~ \$0-fx_sig;
+#X obj 31 158 r~ \$0-sig;
+#X symbolatom 81 223 3 0 0 2 key - -;
+#X symbolatom 133 223 10 0 0 2 scale - -;
+#X floatatom 212 224 5 0 0 2 t_smooth - -;
+#X floatatom 272 223 5 0 0 2 transpose - -;
+#X obj 310 55 switch~;
+#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 310 6 inlet;
+#X obj 370 5 loadbang;
+#X msg 370 30 0;
+#X text 26 85 A very high pitch shifting factor results in a "scrambling"
+effect due to aliasing in the subbands of the Rollers pitch-shifting
+algorithm.;
+#X obj 30 248 reshift~ F# aeolian 440 200 15 111;
+#X connect 1 0 12 0;
+#X connect 2 0 12 1;
+#X connect 3 0 12 2;
+#X connect 4 0 12 3;
+#X connect 5 0 12 4;
+#X connect 7 0 6 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 10 0 6 0;
+#X connect 12 0 0 0;
+#X restore 37 539 pd scramble;
+#X obj 362 490 r~ \$0-sig;
+#X obj 361 535 *~ 0;
+#X obj 386 515 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 359 469 original;
+#X text 443 468 FX;
+#X obj 468 515 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 443 535 *~ 1;
+#X text 148 366 <-- look inside;
 #X connect 2 0 5 1;
 #X connect 3 0 5 0;
 #X connect 4 0 5 0;
@@ -369,11 +484,19 @@ with different scales and transposition.;
 #X connect 12 0 13 0;
 #X connect 13 0 14 0;
 #X connect 14 0 10 1;
-#X connect 15 0 10 0;
+#X connect 15 0 42 0;
 #X connect 17 0 16 0;
 #X connect 18 0 19 0;
 #X connect 20 0 21 0;
 #X connect 22 0 23 0;
-#X connect 24 0 25 0;
-#X connect 26 0 27 0;
-#X connect 28 0 5 0;
+#X connect 24 0 28 0;
+#X connect 25 0 26 0;
+#X connect 27 0 5 0;
+#X connect 29 0 30 0;
+#X connect 32 0 33 0;
+#X connect 34 0 35 0;
+#X connect 36 0 37 0;
+#X connect 37 0 10 0;
+#X connect 38 0 37 1;
+#X connect 41 0 42 1;
+#X connect 42 0 10 0;

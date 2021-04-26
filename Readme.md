@@ -35,9 +35,47 @@ Audio Effects:
 
 * pd/FX1.pd: audio effects using one instance of Reshift
 
+    - discrete frequency shifter (using one band in Rollers)
+    
+    - pitch discretization (just the Reshift effect using 200 bands)
+    
+    - inharmonizer (individual voices)
+    
+    - vibrato
+    
+    - two voices
+    
+    - scramble
+    
+    - delay with Rollers in dry feed forward path
+    
+    - delay with Rollers in wet feed forward path
+    
+    - delay with Rolers in feedback path
+
 * pd/FX2.pd: audio effects using two instances of Reshift
 
+    - two discretized voices
+    
+    - three voices (two discretized and original)
+    
+    - vibratos: two out of phase vibrato effects
+    
+    - pitch cancellation: pitch shift up and same pitch shift down causing artifacts
+    
+    - delay with discretized pitch shifting dry and wet feed forward paths
+    
+    - delay with discretized pitch shifting in feed forward and feedback path
+
 * pd/FX_many.pd: audio effects using many instances of Reshift
+
+    - pitch cancellation: cancelling pitch shifting with 4 Reshift instances
+    
+    - pitch discretized chorus
+    
+    - inharmonizer with parallel voices
+    
+    - harmonizer: seventh chord
 
 * pd/parallelism.pd: template for using many instances of Reshift in separate subprocesses using reshift~_process.pd
 

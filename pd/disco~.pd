@@ -1,0 +1,64 @@
+#N canvas 76 315 1254 536 12;
+#X obj 127 349 /;
+#X text 43 87 f_0;
+#X text 86 277 f_out;
+#X text 156 348 psr = f_out / f_0;
+#X obj 74 146 moses 20;
+#X text 139 145 unvoiced is 0;
+#X obj 26 29 inlet~ in_sig;
+#X obj 26 474 outlet~ out_sig;
+#X text 270 261 quantize to a musical scale;
+#X text 11 507 Manuel Planton 2021;
+#X obj 127 262 abs/quantizer \$1 \$2;
+#X obj 177 413 line;
+#X text 617 6 low latency pitch discretization effect;
+#X obj 336 43 inlet key;
+#X obj 416 42 inlet scale;
+#X obj 526 40 inlet smoothing_time;
+#X obj 177 386 pack f \$5;
+#X obj 499 482 outlet pitch_error;
+#X obj 499 456 -;
+#X obj 127 235 t f f f;
+#X obj 499 397 pack f f;
+#X msg 499 428 \$2 \$1;
+#X obj 693 409 outlet f_0;
+#X obj 712 41 inlet transpose;
+#X obj 625 189 f \$6;
+#X obj 625 163 loadbang;
+#X text 220 80 low latency pitch tracking;
+#X obj 74 78 aubiopitch~ yin 882;
+#X text 797 86 The YIN pitch-tracking block size influences fmin. YIN
+needs blocks of at least 2*Tmax for proper analysis. For fmin=100Hz
+\, we get Tmax=20ms \, so the minimum latency is 2*Tmax=40ms. At fs=44100Hz
+\, we get a block size of 882 samples.;
+#X text 82 57 N=882 for fmin=100Hz @ fs=44100;
+#X text 799 178 For a more efficient implementation \, we have to round
+to a block size of a power of 2 (FFT). So if we round up \, we need
+a block size of 1024 for fmin=86Hz @ fs=44100Hz. If we round down to
+a block size of 512 samples \, we get fmin=172Hz.;
+#X text 23 3 disco~ <key> <scale> <tuning> <win_size> <smoothing_time>
+<transpose>, f 72;
+#X obj 26 437 abs/pd_pitch_shift~ \$4;
+#X connect 0 0 16 0;
+#X connect 4 1 19 0;
+#X connect 6 0 27 0;
+#X connect 6 0 32 0;
+#X connect 10 0 0 0;
+#X connect 10 0 20 0;
+#X connect 11 0 32 2;
+#X connect 13 0 10 1;
+#X connect 14 0 10 2;
+#X connect 15 0 16 1;
+#X connect 16 0 11 0;
+#X connect 18 0 17 0;
+#X connect 19 0 10 0;
+#X connect 19 1 0 1;
+#X connect 19 2 20 1;
+#X connect 20 0 21 0;
+#X connect 21 0 18 0;
+#X connect 23 0 10 3;
+#X connect 24 0 10 3;
+#X connect 25 0 24 0;
+#X connect 27 0 4 0;
+#X connect 27 0 22 0;
+#X connect 32 0 7 0;

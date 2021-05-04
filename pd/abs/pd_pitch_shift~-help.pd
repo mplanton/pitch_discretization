@@ -1,0 +1,36 @@
+#N canvas 965 243 693 586 12;
+#X text 15 30 A pitch shifter using the "rotating tape head" method
+using a delay line.;
+#X text 15 84 args:;
+#X text 15 154 inlets:;
+#X text 25 174 signal: input signal;
+#X text 25 194 float: win_size;
+#X text 15 244 outlet:;
+#X text 25 264 signal: output signal;
+#X text 16 557 Manuel Planton 2021;
+#X obj 328 352 player~;
+#X obj 374 327 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X msg 328 298 ../../../samples/Toms_diner.wav;
+#X msg 338 268 ../../../samples/ave-maria.wav;
+#X obj 329 488 *~;
+#X floatatom 347 464 5 0 0 0 - - -;
+#X obj 320 518 dac~;
+#X floatatom 451 391 5 0 0 2 transpose - -;
+#X floatatom 380 391 5 0 0 2 win_len - -;
+#X obj 329 414 pd_pitch_shift~;
+#X text 13 6 pd_pitch_shift~ <win_size> <psr>;
+#X text 25 129 psr: initial pitch shifting ratio (default=1);
+#X text 25 214 float: pitch shifting ratio;
+#X text 25 106 win_size: length of the grain window size in milliseconds
+(default=25ms), f 74;
+#X connect 8 0 17 0;
+#X connect 9 0 8 1;
+#X connect 10 0 8 0;
+#X connect 11 0 8 0;
+#X connect 12 0 14 0;
+#X connect 12 0 14 1;
+#X connect 13 0 12 1;
+#X connect 15 0 17 2;
+#X connect 16 0 17 1;
+#X connect 17 0 12 0;

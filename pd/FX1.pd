@@ -1,4 +1,4 @@
-#N canvas 292 161 897 640 12;
+#N canvas 784 272 897 640 12;
 #X declare -path pd-aubio/build;
 #X declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #N canvas 72 96 450 300 include 0;
@@ -7,7 +7,7 @@
 #X obj 15 24 declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #X restore 23 17 pd include;
 #X text 110 18 Artistic effects using one instance of reshift~.;
-#X obj 464 132 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 464 132 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X msg 393 45 ../../../samples/Toms_diner.wav;
 #X obj 390 154 abs/player~;
@@ -30,7 +30,7 @@
 #X floatatom 219 282 5 0 0 2 t_smooth - -;
 #X floatatom 279 281 5 0 0 2 transpose - -;
 #X obj 310 55 switch~;
-#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 310 6 inlet;
 #X obj 370 5 loadbang;
@@ -51,7 +51,7 @@ material is found.;
 #X connect 10 0 6 0;
 #X connect 11 0 0 0;
 #X restore 34 309 pd pitch_discretization;
-#X obj 34 285 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 34 285 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 32 228 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -233,7 +233,7 @@ scale for bigger pitch shifts generates inharmonic sounds.;
 #X restore 34 366 pd inharmonizer;
 #X obj 36 398 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 105 253 505 356 vibrato 0;
+#N canvas 72 253 505 356 vibrato 0;
 #X obj 16 277 throw~ \$0-fx_sig;
 #X obj 16 142 r~ \$0-sig;
 #X symbolatom 66 207 3 0 0 2 key - -;
@@ -277,24 +277,24 @@ scale for bigger pitch shifts generates inharmonic sounds.;
 1;
 #X obj 368 347 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 638 316 784 628 pitch_disc_feedback_delay 0;
-#X obj 255 595 throw~ \$0-fx_sig;
-#X obj 254 161 r~ \$0-sig;
-#X symbolatom 442 314 3 0 0 2 key - -;
-#X symbolatom 494 314 10 0 0 2 scale - -;
-#X floatatom 573 315 5 0 0 2 t_smooth - -;
-#X floatatom 633 314 5 0 0 2 transpose - -;
+#N canvas 95 286 632 628 pitch_disc_feedback_delay 0;
+#X obj 33 578 throw~ \$0-fx_sig;
+#X obj 32 144 r~ \$0-sig;
+#X symbolatom 220 297 3 0 0 2 key - -;
+#X symbolatom 272 297 10 0 0 2 scale - -;
+#X floatatom 351 298 5 0 0 2 t_smooth - -;
+#X floatatom 411 297 5 0 0 2 transpose - -;
 #X obj 310 55 switch~;
 #X obj 310 31 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 310 6 inlet;
-#X floatatom 390 184 5 0 0 2 delay - -;
-#X floatatom 429 185 5 0 0 2 feedback - -;
-#X obj 429 410 clip -0.9 0.9;
-#X obj 390 223 delread~ \$0-pdfbd 400;
-#X obj 391 473 delwrite~ \$0-pdfbd 1000;
-#X obj 390 435 *~ 0.7;
-#X obj 391 339 reshift~ C ionian 440 200 0 0;
+#X floatatom 168 167 5 0 0 2 delay - -;
+#X floatatom 207 168 5 0 0 2 feedback - -;
+#X obj 207 393 clip -0.9 0.9;
+#X obj 168 206 delread~ \$0-pdfbd 400;
+#X obj 169 456 delwrite~ \$0-pdfbd 1000;
+#X obj 168 418 *~ 0.7;
+#X obj 169 322 reshift~ C ionian 440 200 0 0;
 #X obj 370 5 loadbang;
 #X msg 370 30 0;
 #X text 18 84 Delay with pitch discretization in feedback path. Interesting
@@ -318,7 +318,7 @@ with different scales and transposition.;
 #X connect 17 0 6 0;
 #X restore 368 371 pd pitch_disc_feedback_delay;
 #X msg 413 78 ../../../samples/saxophone-weep.wav;
-#N canvas 72 291 669 456 pitch_disc_feed_forward_delay_dry 0;
+#N canvas 94 343 669 456 pitch_disc_feed_forward_delay_dry 0;
 #X obj 255 390 throw~ \$0-fx_sig;
 #X obj 254 161 r~ \$0-sig;
 #X symbolatom 305 253 3 0 0 2 key - -;
@@ -434,7 +434,7 @@ best if the right key and scale is found.;
 #X restore 37 481 pd two_voices;
 #X obj 37 515 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 72 405 505 413 scramble 0;
+#N canvas 150 434 505 413 scramble 0;
 #X obj 31 293 throw~ \$0-fx_sig;
 #X obj 31 158 r~ \$0-sig;
 #X symbolatom 81 223 3 0 0 2 key - -;

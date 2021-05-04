@@ -1,4 +1,4 @@
-#N canvas 552 161 897 640 12;
+#N canvas 938 273 897 640 12;
 #X declare -path pd-aubio/build;
 #X declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #N canvas 72 96 450 300 include 0;
@@ -22,7 +22,7 @@
 1;
 #X obj 368 347 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 100 382 784 628 pitch_disc_feedback_delay 0;
+#N canvas 72 382 784 628 pitch_disc_feedback_delay 0;
 #X obj 351 585 throw~ \$0-fx_sig;
 #X obj 353 148 r~ \$0-sig;
 #X symbolatom 506 314 3 0 0 2 key - -;
@@ -112,7 +112,7 @@ key and scale is found.;
 #X connect 15 0 0 0;
 #X connect 16 0 0 0;
 #X restore 32 276 pd two_discretized_voices;
-#N canvas 621 399 601 517 vibratos 0;
+#N canvas 72 373 601 517 vibratos 0;
 #X obj 14 447 throw~ \$0-fx_sig;
 #X obj 16 142 r~ \$0-sig;
 #X symbolatom 66 207 3 0 0 2 key - -;
@@ -168,7 +168,7 @@ key and scale is found.;
 #X restore 33 400 pd vibratos;
 #X obj 32 312 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 1132 533 604 484 three_voices 0;
+#N canvas 115 391 604 484 three_voices 0;
 #X obj 40 419 throw~ \$0-fx_sig;
 #X obj 22 159 r~ \$0-sig;
 #X symbolatom 217 224 3 0 0 2 key - -;
@@ -207,7 +207,7 @@ original signal;
 #X connect 15 0 0 0;
 #X connect 16 0 0 0;
 #X restore 32 336 pd three_voices;
-#N canvas 238 437 669 513 pitch_disc_dual_feed_forward_delay 0;
+#N canvas 84 324 669 513 pitch_disc_dual_feed_forward_delay 0;
 #X obj 256 459 throw~ \$0-fx_sig;
 #X obj 255 230 r~ \$0-sig;
 #X symbolatom 359 376 3 0 0 2 key - -;
@@ -312,7 +312,7 @@ of reshift.;
 #X obj 464 506 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 439 526 *~ 1;
-#X text 10 608 comment;
+#X text 10 608 Manuel Planton 2021;
 #X connect 1 0 3 1;
 #X connect 2 0 3 0;
 #X connect 3 0 7 0;

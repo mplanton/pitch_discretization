@@ -1,4 +1,4 @@
-#N canvas 72 309 1172 769 12;
+#N canvas 605 136 1172 769 12;
 #X declare -path pd-aubio/build;
 #X declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #X obj 14 591 aubio;
@@ -6,10 +6,9 @@
 #X obj 15 534 declare -path /usr/lib/pd/extra/iemlib -lib iemlib;
 #X text 16 510 maybe you have to change this to your iemlib install
 path;
-#X obj 796 185 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 796 185 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X msg 722 129 ../../../samples/Toms_diner.wav;
-#X msg 737 157 ../../../samples/ave-maria.wav;
+#X msg 730 108 ../../../samples/Toms_diner.wav;
 #X obj 722 207 abs/player~;
 #X obj 722 700 *~;
 #X obj 713 730 dac~;
@@ -23,7 +22,7 @@ pitch shifting, f 74;
 #X text 20 733 Manuel Planton 2021;
 #X msg 639 123 bang;
 #X obj 639 154 openpanel;
-#X text 948 129 in F#m;
+#X text 956 108 in F#m;
 #X symbolatom 815 379 3 0 0 2 key - -;
 #X symbolatom 884 377 10 0 0 2 scale - -;
 #X floatatom 970 378 5 0 0 2 t_smooth - -;
@@ -80,7 +79,7 @@ of the effect., f 74;
 #X floatatom 607 331 5 0 0 0 - - -;
 #X text 18 487 required libraries:;
 #X obj 763 659 hsl 128 15 0 127 0 0 empty empty vol -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 10000 1;
 #X obj 760 679 dbtorms;
 #X floatatom 760 704 5 0 0 0 - - -;
 #X obj 570 134 vsl 15 160 200 1200 1 0 empty empty freq 0 -9 0 10 -262144
@@ -88,7 +87,7 @@ of the effect., f 74;
 #X text 21 414 2) frequency error in Hertz between the input and output
 signal, f 64;
 #X obj 852 497 hsl 128 15 -50 50 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 7895 1;
+-1 -1 7726 1;
 #X floatatom 967 444 5 0 0 1 f_0 - -;
 #X text 21 434 3) tracked fundamental frequency of the input signal
 , f 64;
@@ -101,7 +100,6 @@ signal, f 64;
 #X obj 518 465 *~;
 #X floatatom 536 442 5 0 0 0 - - -;
 #X text 508 487 use headphones...;
-#X obj 746 417 reshift~ F# aeolian 440 200 15 0;
 #X text 11 28 A low latency pitch discretization effect. By now \,
 the minimum frequency fmin=100Hz., f 86;
 #X text 21 94 - scale: the musical scale the input signal should be
@@ -110,35 +108,38 @@ quantized to, f 74;
 #X text 21 284 2) symbol key;
 #X text 21 264 1) sig input signal;
 #X text 21 394 1) sig output signal;
-#X connect 4 0 7 1;
-#X connect 5 0 7 0;
-#X connect 6 0 7 0;
-#X connect 7 0 23 0;
-#X connect 7 0 49 0;
-#X connect 8 0 9 0;
-#X connect 8 0 9 1;
-#X connect 17 0 18 0;
-#X connect 18 0 7 0;
-#X connect 20 0 49 1;
-#X connect 21 0 49 2;
-#X connect 22 0 49 3;
-#X connect 23 0 8 0;
-#X connect 24 0 23 2;
-#X connect 27 0 30 0;
-#X connect 28 0 27 0;
-#X connect 29 0 38 0;
-#X connect 30 0 23 0;
-#X connect 30 0 49 0;
-#X connect 31 0 30 1;
+#X msg 749 142 ../../../samples/saxophone-weep.wav;
+#X obj 746 417 reshift~ G# aeolian 440 200 15 0;
+#X text 1006 143 in Abm;
+#X connect 4 0 6 1;
+#X connect 5 0 6 0;
+#X connect 6 0 22 0;
+#X connect 6 0 55 0;
+#X connect 7 0 8 0;
+#X connect 7 0 8 1;
+#X connect 16 0 17 0;
+#X connect 17 0 6 0;
+#X connect 19 0 55 1;
+#X connect 20 0 55 2;
+#X connect 21 0 55 3;
+#X connect 22 0 7 0;
+#X connect 23 0 22 2;
+#X connect 26 0 29 0;
+#X connect 27 0 26 0;
+#X connect 28 0 37 0;
+#X connect 29 0 22 0;
+#X connect 29 0 55 0;
+#X connect 30 0 29 1;
+#X connect 32 0 33 0;
 #X connect 33 0 34 0;
-#X connect 34 0 35 0;
-#X connect 35 0 8 1;
-#X connect 36 0 28 0;
-#X connect 42 0 49 4;
-#X connect 45 0 46 0;
-#X connect 46 0 23 0;
-#X connect 46 0 49 0;
-#X connect 47 0 46 1;
-#X connect 49 0 23 1;
-#X connect 49 1 29 0;
-#X connect 49 2 39 0;
+#X connect 34 0 7 1;
+#X connect 35 0 27 0;
+#X connect 41 0 55 4;
+#X connect 44 0 45 0;
+#X connect 45 0 22 0;
+#X connect 45 0 55 0;
+#X connect 46 0 45 1;
+#X connect 54 0 6 0;
+#X connect 55 0 22 1;
+#X connect 55 1 28 0;
+#X connect 55 2 38 0;

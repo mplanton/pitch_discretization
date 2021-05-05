@@ -7,7 +7,7 @@ Sound engineering project by Manuel Planton
 
 The goal is to develop a real-time capable pitch discretization effect similar to *Autotune* and explore artistic effects by repeatedly applying it to a speech signal.
 
-The resulting artistisc experiments are in "pd/experiment.pd" where pitch-discretization effects are used which use two different pitch-shifting algorithms (granular, "Rollers").
+The resulting artistic experiments are in "pd/experiment.pd" where pitch-discretization effects are used which use two different pitch-shifting algorithms (granular, "Rollers").
 
 In this project, pitch-tracking and pitch-shifting algorithms had been explored in Jupyter Notebooks, which lead to an implementation of the pitch-discretization effect called "Reshift" using the "Rollers" pitch-shifting algorithm.
 The realtime implementation of two pitch discretization effects, the experiments for repeatedly applying pitch-shifting and a collection of different audio effects using pitch-discretization are implemented in pure data.
@@ -20,7 +20,7 @@ Directories
 
 * py: implementation of the developed algorithms
 
-* pd: realtime implementation of Reshift and different audio effects
+* pd: realtime implementation of two pitch-discretization effects, experiments and different audio effects using pitch-discretization
 
 
 Pitch-Discretization

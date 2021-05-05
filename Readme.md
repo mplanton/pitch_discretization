@@ -3,7 +3,14 @@ Reshift
 
 Repeated Pitch-shifting for Frequency Discretization as Artistic Effect for Speech Signals.
 
-The goal is to develop a real-time capable pitch discretization effect named *reshift*  similar to *Autotune* and generate artistic effects by repeatedly applying it to a speech signal.
+Sound engineering project by Manuel Planton
+
+The goal is to develop a real-time capable pitch discretization effect similar to *Autotune* and explore artistic effects by repeatedly applying it to a speech signal.
+
+The resulting artistisc experiments are in "pd/experiment.pd" where pitch-discretization effects are used which use two different pitch-shifting algorithms (granular, "Rollers").
+
+In this project, pitch-tracking and pitch-shifting algorithms had been explored in Jupyter Notebooks, which lead to an implementation of the pitch-discretization effect called "Reshift" using the "Rollers" pitch-shifting algorithm.
+The realtime implementation of two pitch discretization effects, the experiments for repeatedly applying pitch-shifting and a collection of different audio effects using pitch-discretization are implemented in pure data.
 
 
 Directories
@@ -13,7 +20,7 @@ Directories
 
 * py: implementation of the developed algorithms
 
-* pd: realtime implementation of Reshift and different audio effects using Reshift
+* pd: realtime implementation of Reshift and different audio effects
 
 
 Pitch-Discretization
@@ -27,11 +34,63 @@ A pitch discretization effect consists of
 
 * and of a pitch-shifting algorithm.
 
-For pitch-tracking, *pYIN* is used and for pitch-shifting, the *Rollers* algorithm has been chosen.
+
+The developed realtime effects for pitch-discretization are:
+
+* pd/reshift~.pd: the Reshift pitch-discretization effect using Rollers pitch-shifting
+
+* pd/disco~.pd: a pitch discretization effect using a granular method for pitch-shifting
 
 
-Audio Effects:
---------------
+Notebooks
+---------
+
+These jupyter notebooks document the development, exploration and testing of the algorithms used in this project.
+See the [index](notebooks/Index.ipynb) for an overview of the notebooks.
+
+
+Open Jupyter Notebooks
+----------------------
+
+```
+conda activate base
+jupyter notebook
+```
+
+Then select the notebook you want to open in your browser.
+
+
+Installation
+------------
+
+__pure data environment:__
+
+```
+sudo apt install gcc make linux-headers-$(uname -r) build-essential automake autoconf libtool gettext git libjack-jackd2-dev libasound2-dev
+sudo apt install libaubio-dev
+pd/make_pd.sh
+pd/make_libs.sh
+```
+
+__python environment:__
+
+* get the anaconda installer for your system from [here](https://www.anaconda.com/products/individual)
+
+* install anaconda
+
+* optionally deactivate conda's base environment with
+        conda config --set auto_activate_base false
+
+* install dependencies
+
+```
+conda activate base
+pip3 install presets librosa snakeviz
+```
+
+
+Possible Audio Effects Using Pitch-discretization with Rollers Pitch-shifting:
+------------------------------------------------------------------------------
 
 * pd/FX1.pd: audio effects using one instance of Reshift
 
@@ -76,48 +135,4 @@ Audio Effects:
     - inharmonizer with parallel voices
     
     - harmonizer: seventh chord
-
-* pd/parallelism.pd: template for using many instances of Reshift in separate subprocesses using reshift~_process.pd
-
-* pd/reshift~.pd: the Reshift pitch-discretization effect
-
-
-Notebooks
----------
-
-These jupyter notebooks document the development, exploration and testing of the algorithms used in this project.
-See the [index](notebooks/Index.ipynb) for an overview of the notebooks.
-
-
-Open Jupyter Notebooks
-----------------------
-
-```
-conda activate base
-jupyter notebook
-```
-
-Then select the notebook you want to open in your browser.
-
-
-Installation
------------
-
-* get the anaconda installer for your system from [here](https://www.anaconda.com/products/individual)
-
-* install anaconda
-
-* deactivate conda's base environment with
-        conda config --set auto_activate_base false
-
-* install dependencies
-
-```
-conda activate base
-pip3 install presets librosa snakeviz
-sudo apt install gcc make linux-headers-$(uname -r) build-essential automake autoconf libtool gettext git libjack-jackd2-dev libasound2-dev
-sudo apt install libaubio-dev
-pd/make_pd.sh
-pd/make_libs.sh
-```
 

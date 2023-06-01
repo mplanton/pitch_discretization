@@ -3,9 +3,10 @@ Reshift
 
 Repeated Pitch-shifting for Frequency Discretization as Artistic Effect for Speech Signals.
 
-Sound engineering project by Manuel Planton
+This repository originated during the course of the audio engineering project by Manuel Planton at the institute for electronic music and acoustics in Graz.
+Extensive documentation about the research and implementation is found [here](Audio_Engineering_Project_-_Manuel_Planton.pdf).
 
-The goal is to develop a real-time capable pitch discretization effect similar to *Autotune* and explore artistic effects by repeatedly applying it to a speech signal.
+The goal was to develop a real-time capable pitch discretization effect similar to *Autotune* and explore artistic effects by repeatedly applying it to a speech signal.
 
 The resulting artistic experiments are in "pd/experiment.pd" where pitch-discretization effects are used which use two different pitch-shifting algorithms (granular, "Rollers").
 
